@@ -1,7 +1,7 @@
 const regModel = require('../Models/regModel')
 const cloudinary = require("../Utils/cloudinary");
-const jwt = require('jsonwebtoken')
-const bcryptjs = require("bcryptjs");
+const emailSender = require("../Utils/email");
+// const bcryptjs = require("bcryptjs");
 
 exports.newReg = async (req,res)=>{
     try {
@@ -39,6 +39,14 @@ exports.newReg = async (req,res)=>{
        const newApply = new regModel(data)
        await newApply.save()
 
+       const message = `your application to be a student of the curve has been submitted.we are reviewing your information.`
+        emailSender({
+            email: newApply.email,
+            subject: "Welcome, New User",
+            message,
+        });
+
+
        function validateEmail(email) {
         const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
         return re.test(email);
@@ -62,3 +70,77 @@ exports.newReg = async (req,res)=>{
         })
     }
 }
+
+exports.getSingleData = async(req,res)=>{
+    try{
+        const newId = req.params.newId;
+        const oneData = await regModel.findById(newId);
+        res.status(201).json({
+            message: "Single Data",
+            data: oneData
+        });    
+    }catch(e){
+        res.status(400).json({
+            message: e.message
+        });
+    }
+};
+
+exports.getAll = async(req,res)=>{
+    try{
+        const allReg = await regModel.find();
+        res.status(201).json({
+            message: "All Admin",
+            length: allReg.length,
+            data: allReg
+        });    
+    }catch(e){
+        res.status(400).json({
+            message: e.message
+        });
+    }
+};
+exports.updateInfo = async(req,res)=>{
+    try{
+        const{name,email,phoneNumber,gender,levelOfEducation,address,stateOfOrigin,localGovernment,hobbies,age,Stack,comment,Image}=req.body
+        const oneId = req.params.oneId;
+        const singleinfo = await regModel.findById(oneId);
+        const data = {
+            name,
+            email,
+            phoneNumber,
+            gender,
+            levelOfEducation,
+            address,
+            stateOfOrigin,
+            localGovernment,
+            hobbies,
+            age,
+            Stack,
+            comment,
+            }
+        const updatedInfo = await regModel.findByIdAndUpdate(oneId,data);
+
+        res.status(200).json({
+            status: "Successfully updated info.",
+            data: updatedInfo
+        });
+    }catch(e){
+        res.status(404).json({
+            message: e.message
+        });
+    }
+};
+
+exports.deleteRec = async(req,res)=>{
+    try{
+        const id = req.params.id
+        await regModel.findByIdAndDelete(id);
+
+        res.status(201).json({ message: " Successfully Deleted"})
+    }catch(e){
+        res.status(404).json({
+            message: e.message
+        });
+    }
+};

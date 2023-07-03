@@ -5,6 +5,7 @@ const cors = require("cors");
 const fileUpload = require("express-fileupload")
 
 const newRegister = require("./Routers/regRouter");
+const Reaching = require("./Routers/ReachOut")
 // const student = require("./Routers/studentRoute");
 // const teacher = require("./Routers/teacherRoute")
 
@@ -20,12 +21,13 @@ app.use(fileUpload({
 
 
 app.use("/api",newRegister);
+app.use("/api",Reaching)
 // app.use("/api", student);
 // app.use("/api", teacher)
 
 app.get("/", (req,res)=>{
     res.send("Welcome Message")
-});
+});   
 
 app.use("/uploaded-image", express.static(process.cwd() + "/uploads"));
 

@@ -137,7 +137,7 @@ exports.deleteRec = async(req,res)=>{
         const id = req.params.id
         await regModel.findByIdAndDelete(id);
 
-        res.status(201).json({ message: " Successfully Deleted"})
+        res.status(201).json({ message: " now Successfully  Deleted"})
     }catch(e){
         res.status(404).json({
             message: e.message

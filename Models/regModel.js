@@ -34,7 +34,7 @@ const regSchema = new mongoose.Schema({
         type: String
     },
     age : {
-        type: String
+        type: String 
     },
     Stack : {
         type: String
